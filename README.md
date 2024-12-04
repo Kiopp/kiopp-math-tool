@@ -10,4 +10,4 @@ A simple tool for calculating the entire divided differences table. Can take 1 o
 A simple tool for calculating the Newton interpolation between data points. Behind the scenes this tool will use divided differences and will thus have the same input parameters.
 
 ## Compilation
-Compilation can easily be done using any C-compiler as I am only using standard or included libraries. 
+Compilation can easily be done using any C-compiler as I am only using standard or included libraries. I am using gcc. And have only tested the program on an arch-based linux distribution.
