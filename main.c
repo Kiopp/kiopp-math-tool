@@ -12,6 +12,8 @@ double** simplex(double** tableau, int rows, int cols);
 
 int max_LP();
 
+void print_simplex_tableau(double** tableau, int cols, int rows);
+
 int main()
 {
     int* selection = (int*)malloc(sizeof(int));
@@ -134,7 +136,7 @@ int divided_differences_2D()
     }
 
     // Cleanup and return
-    for (int i; i < *n; i++) {
+    for (int i = 0; i < *n; i++) {
         free(dd_table[i]);
     }
     free(dd_table);
@@ -241,52 +243,121 @@ int max_LP()
         if (tableau[i] == NULL) { fprintf(stderr, "Memory allocation failed: double* tableau[%d]\n", i); exit(1); }
     }
 
-    // Get tableau values from the user
-    printf("Enter the initial tableau values row by row, each value seperated by spaces:\n> ");
-    for (int i = 0; i < *rows; i++) 
+    // Get objective function from user
+    printf("Enter objective function coefficients:\nFormat: ");
+    for (int i = 1; i <= *cols - *rows; i++) {
+        printf("c%d ", i);
+    }
+    printf("\n> ");
+
+    for (int i = 0; i < *cols - *rows; i++) 
     {
-        for (int j = 0; j < *cols; j++) 
+        while (scanf("%lf", &tableau[*rows-1][i]) != 1) 
+        {
+            // Inform user
+            printf("Value c%d failed to read. Please try again!\n> ", i + 1);
+
+            // Clear the input buffer
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF); 
+
+            // Reset for-loop
+            i = 0;
+        }
+        //printf("Value %lf read to column %d!\n", tableau[*rows - 1][i], i);
+        tableau[*rows - 1][i] *= -1; // Inverse coefficients for tableau
+    }
+    tableau[*rows - 1][*cols - 1] = 0; // objective function RHS always 0 at start
+    
+    // Get <= restrictions from user
+    int reset_loop = 0;
+    for (int i = 0; i < *rows - 1; i++) 
+    {
+        // User inserted invalid input on previous row
+        if (reset_loop) 
+        {
+            reset_loop = 0;
+            i -= 1;
+        }
+
+        // Get each row seperately
+        printf("\nEnter restriction row #%d:\nFormat: ", i + 1);
+        for (int j = 1; j <= *cols - *rows; j++) {
+            printf("c%d ", j);
+        }
+        printf("b%d\n> ", i + 1);
+
+        // Get coefficients
+        for (int j = 0; j < *cols - *rows; j++) 
         {
             while (scanf("%lf", &tableau[i][j]) != 1) 
             {
                 // Inform user
-                printf("Failed to read value at index [%d][%d]. Please try again!\n", i, j);
+                printf("\nValue c%d failed to read. Please try again!\n", j + 1);
+                printf("Enter restriction row #%d:\n> ", i + 1);
 
                 // Clear the input buffer
                 int c;
                 while ((c = getchar()) != '\n' && c != EOF); 
+
+                // Reset for-loop
+                j = 0;
+            }
+            //printf("Value %lf read to column %d!\n", tableau[i][j], j);
+        }
+
+        // Get RHS value
+        if (scanf("%lf", &tableau[i][*cols - 1]) != 1) 
+        {
+            // Inform user
+            printf("Value b%d failed to read. Please try again!\n> ", i + 1);
+
+            // Clear the input buffer
+            int c;
+            while ((c = getchar()) != '\n' && c != EOF); 
+
+            // Reset for-loop
+            reset_loop = 1;
+        }
+        //printf("Value %lf read to column %d!\n", tableau[i][*cols], *cols);
+    }
+    
+
+    // Insert slack variables
+    for (int i = 0; i < *rows; i++) 
+    {
+        for (int j = *cols - *rows; j < *cols - 1; j++) 
+        {   
+            if (i == *rows - 1) 
+            {
+                // Final row
+                tableau[i][j] = 0;
+            }
+            else if (i == (j - *rows - 1)) 
+            {
+                // Diagonal 1
+                tableau[i][j] = 1;
+            }
+            else 
+            {
+                // Fill rest of slack matrix with 0
+                tableau[i][j] = 0;
             }
         }
     }
 
     // Print initial tableau
     printf("Initial tableau:\n");
-    for (int i = 0; i < *rows; i++) 
-    {
-        for (int j = 0; j < *cols; j++) 
-        {
-            printf("%.3lf\t", tableau[i][j]);
-        }
-        printf("\n\n");
-    }
+    print_simplex_tableau(tableau, *cols, *rows);
 
     double** final = simplex(tableau, *rows, *cols);
 
     // Print final tableau
     printf("Final tableau:\n");
-    for (int i = 0; i < *rows; i++) 
-    {
-        for (int j = 0; j < *cols; j++) 
-        {
-            printf("%.3lf\t", final[i][j]);
-        }
-        printf("\n\n");
-    }
+    print_simplex_tableau(final, *cols, *rows);
 
     // Cleanup and return
-    for (int i; i < *rows; i++) {
-        free(tableau[i]);
-    }
+    for (int i = 0; i < *rows; i++) { free(tableau[i]); }
     free(tableau);
     free(rows);
     free(cols);
@@ -363,4 +434,33 @@ double** simplex(double** tableau, int rows, int cols)
     }
 
     return tableau;
+}
+
+void print_simplex_tableau(double** tableau, int cols, int rows)
+{
+        for (int i = 0; i < cols - rows; i++) 
+    {
+        printf("\tx%d", i);
+    }
+    for (int i = 0; i < (cols - 1) - (cols - rows); i++) 
+    {
+        printf("\ts%d", i);
+    }
+    printf("\tRHS\n");
+    for (int i = 0; i < rows; i++) 
+    {
+        if (i == rows - 1) 
+        {
+            printf(" z|\t");
+        }
+        else 
+        {
+            printf("#%d|\t", i + 1);
+        }
+        for (int j = 0; j < cols; j++) 
+        {
+            printf("%.3lf\t", tableau[i][j]);
+        }
+        printf("\n\n");
+    }
 }
