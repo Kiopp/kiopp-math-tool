@@ -23,7 +23,7 @@ int main()
 
     while (1)
     {
-        printf("Choose a mode:\n1. 2D Divided Differences\n2. Max LP Simplex\n3. Exit\n> ");
+        printf("Choose a mode:\n1. Classic Divided Differences\n2. Normal Max LP Simplex\n3. Exit\n> ");
         if(main_menu(selection)) { 
             printf("An error has occured in main_menu. Closing program...\n"); 
             exit(1); }
@@ -328,19 +328,18 @@ int max_LP()
     {
         for (int j = *cols - *rows; j < *cols - 1; j++) 
         {   
+            if (i == j - (*cols - *rows)) 
+            {  
+                tableau[i][j] = 1;
+            } 
+            else 
+            {
+                tableau[i][j] = 0;
+            }
+            
             if (i == *rows - 1) 
             {
                 // Final row
-                tableau[i][j] = 0;
-            }
-            else if (i == (j - *rows - 1)) 
-            {
-                // Diagonal 1
-                tableau[i][j] = 1;
-            }
-            else 
-            {
-                // Fill rest of slack matrix with 0
                 tableau[i][j] = 0;
             }
         }
@@ -440,11 +439,11 @@ void print_simplex_tableau(double** tableau, int cols, int rows)
 {
         for (int i = 0; i < cols - rows; i++) 
     {
-        printf("\tx%d", i);
+        printf("\tx%d", i + 1);
     }
     for (int i = 0; i < (cols - 1) - (cols - rows); i++) 
     {
-        printf("\ts%d", i);
+        printf("\ts%d", i + 1);
     }
     printf("\tRHS\n");
     for (int i = 0; i < rows; i++) 
