@@ -4,15 +4,16 @@
 
 int main_menu(int* input_buffer);
 
-double** DD_2D(double* x, double* y, int n);
-
 int divided_differences_2D();
+int max_LP();
+int weighted_divided_differences();
 
+double** DD_2D(double* x, double* y, int n);
 double** simplex(double** tableau, int rows, int cols);
 
-int max_LP();
-
 void print_simplex_tableau(double** tableau, int cols, int rows);
+void print_DD_table(double** table, int n);
+void print_wDD_table(double** table, int n);
 
 int main()
 {
@@ -23,7 +24,7 @@ int main()
 
     while (1)
     {
-        printf("Choose a mode:\n1. Classic Divided Differences\n2. Normal Max LP Simplex\n3. Exit\n> ");
+        printf("Choose a mode:\n1. Classic Divided Differences\n2. Normal Max LP Simplex\n3. Weighted Divided Differences\n4. Exit\n> ");
         if(main_menu(selection)) { 
             printf("An error has occured in main_menu. Closing program...\n"); 
             exit(1); }
@@ -31,7 +32,7 @@ int main()
         switch (*selection)
         {
             case 1:
-                // Divided Differences
+                // DD
                 divided_differences_2D();
                 break;
             case 2:
@@ -39,6 +40,10 @@ int main()
                 max_LP();
                 break;
             case 3: 
+                // wDD
+                exit(0);
+                break;
+            case 4: 
                 // Exit
                 exit(0);
                 break;
@@ -127,13 +132,7 @@ int divided_differences_2D()
     double **dd_table = DD_2D(x, y, *n);
 
     // Print the divided differences table
-    printf("\nDivided Differences Table:\n");
-    for (int i = 0; i < *n; i++) {
-        for (int j = 0; j < *n - i; j++) {
-            printf("%.3lf\t", dd_table[i][j]);
-        }
-        printf("\n\n");
-    }
+    print_DD_table(dd_table, *n);
 
     // Cleanup and return
     for (int i = 0; i < *n; i++) {
@@ -459,6 +458,28 @@ void print_simplex_tableau(double** tableau, int cols, int rows)
         for (int j = 0; j < cols; j++) 
         {
             printf("%.3lf\t", tableau[i][j]);
+        }
+        printf("\n\n");
+    }
+}
+
+void print_DD_table(double** table, int n)
+{
+    printf("\nDivided Differences Table:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i; j++) {
+            printf("%.3lf\t", table[i][j]);
+        }
+        printf("\n\n");
+    }
+}
+
+void print_wDD_table(double** table, int n)
+{
+    printf("\nWeighted Divided Differences Table:\n");
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n - i; j++) {
+            printf("%.3lf\t", table[i][j]);
         }
         printf("\n\n");
     }
