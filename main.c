@@ -3,17 +3,21 @@
 #include <stdlib.h>
 #include <math.h>
 
+// Menu functions
 int main_menu(int* input_buffer);
 
-int divided_differences_2D();
+// Controller functions
+int classic_divided_differences();
 int max_LP();
 int weighted_divided_differences();
 
-double** DD_2D(double* x, double* y, int n);
+// Calculating functions
+double** DD(double* x, double* y, int n);
 double** wDD(double* delta, double* f, int n);
 double** simplex(double** tableau, int rows, int cols);
 double determinant_2x2(double a, double b, double c, double d);
 
+// Printing functions
 void print_simplex_tableau(double** tableau, int cols, int rows);
 void print_DD_table(double** table, double* x, int n);
 void print_wDD_table(double** table, double* d, int n);
@@ -36,7 +40,7 @@ int main()
         {
             case 1:
                 // DD
-                divided_differences_2D();
+                classic_divided_differences();
                 break;
             case 2: 
                 // wDD
@@ -79,7 +83,7 @@ int main_menu(int* input_buffer)
     return 0;
 }
 
-int divided_differences_2D()
+int classic_divided_differences()
 {
     // Memory allocation
     int* n = (int*)malloc(sizeof(int));
@@ -124,7 +128,7 @@ int divided_differences_2D()
     }
 
     // Calculate the divided differences table
-    double **dd_table = DD_2D(x, y, *n);
+    double **dd_table = DD(x, y, *n);
 
     // Print the divided differences table
     print_DD_table(dd_table, x,*n);
@@ -201,7 +205,7 @@ int weighted_divided_differences()
     return 0;
 }
 
-double** DD_2D(double* x, double* y, int n)
+double** DD(double* x, double* y, int n)
 {
     // Allocate memory for the DD table
     double** table = (double **)malloc(n * sizeof(double *));
