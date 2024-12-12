@@ -112,14 +112,14 @@ int classic_divided_differences()
     if (y == NULL) { fprintf(stderr, "Memory allocation failed: double* y\n"); exit(1); }
 
     // Scan user input
-    for (int i = 0; i < *n; i++) 
+    for (size_t i = 0; i < *n; i++) 
     {
-        printf("\nEnter data point #%d:\nFormat: x y\n> ", i+1);
+        printf("\nEnter data point #%zu:\nFormat: x y\n> ", i+1);
         while (scanf("%lf %lf", &x[i], &y[i]) != 2)
         {
             // Inform user
             printf("\nFailed to read input. Try again!\n");
-            printf("Enter data point #%d:\nFormat: x y\n> ", i+1);
+            printf("Enter data point #%zu:\nFormat: x y\n> ", i+1);
 
             // Clear the input buffer
             int c;
@@ -173,14 +173,14 @@ int weighted_divided_differences()
     if (y == NULL) { fprintf(stderr, "Memory allocation failed: double* y\n"); exit(1); }
 
     // Scan user input
-    for (int i = 0; i < *n; i++) 
+    for (size_t i = 0; i < *n; i++) 
     {
-        printf("\nEnter data point #%d:\nFormat: δ f\n> ", i+1);
+        printf("\nEnter data point #%zu:\nFormat: δ f\n> ", i+1);
         while (scanf("%lf %lf", &x[i], &y[i]) != 2)
         {
             // Inform user
             printf("\nFailed to read input. Try again!\n");
-            printf("Enter data point #%d:\nFormat: δ f\n> ", i+1);
+            printf("Enter data point #%zu:\nFormat: δ f\n> ", i+1);
 
             // Clear the input buffer
             int c;
@@ -218,26 +218,26 @@ double** DD(double* x, double* y, int n)
     }
 
     // Allocate memory for each column
-    for (int row = 0; row < n; row++) 
+    for (size_t row = 0; row < n; row++) 
     {
         table[row] = (double *)malloc((n - row) * sizeof(double)); // (n - row) for better memory efficiency
         if (table[row] == NULL) 
         {
-            fprintf(stderr, "Memory allocation failed: double* table[%d]\n", row);
+            fprintf(stderr, "Memory allocation failed: double* table[%zu]\n", row);
             exit(1);
         }
     }
 
     // Initialize the first column with y values
-    for (int row = 0; row < n; row++) 
+    for (size_t row = 0; row < n; row++) 
     {
       table[row][0] = y[row];
     }
 
     // Calculate the divided differences
-    for (int col = 1; col < n; col++) 
+    for (size_t col = 1; col < n; col++) 
     {
-      for (int row = 0; row < n - col; row++) 
+      for (size_t row = 0; row < n - col; row++) 
       {
         table[row][col] = (table[row + 1][col - 1] - table[row][col - 1]) / (x[row + col] - x[row]);
       }
@@ -258,24 +258,24 @@ double** wDD(double* d, double* f, int n)
     }
 
     // Allocate memory for each column
-    for (int row = 0; row < n; row++) 
+    for (size_t row = 0; row < n; row++) 
     {
         table[row] = (double *)malloc((n - row) * sizeof(double)); // (n - row) for better memory efficiency
         if (table[row] == NULL) 
         {
-            fprintf(stderr, "Memory allocation failed: double* table[%d]\n", row);
+            fprintf(stderr, "Memory allocation failed: double* table[%zu]\n", row);
             exit(1);
         }
     }
 
     // Initialize the first column with f values
-    for (int i = 0; i < n; i++) 
+    for (size_t i = 0; i < n; i++) 
     {
       table[i][0] = f[i];
     }
 
     // Calculate the weighted divided differences
-    for (int j = 1; j < n; j++) 
+    for (size_t j = 1; j < n; j++) 
     {
         for (int i = 0; i < n - j; i++) 
         {
@@ -602,7 +602,7 @@ void print_simplex_tableau(double** tableau, int cols, int rows)
         printf("\ts%d", i + 1);
     }
     printf("\tRHS\n");
-    for (int i = 0; i < rows; i++) 
+    for (size_t i = 0; i < rows; i++) 
     {
         if (i == rows - 1) 
         {
@@ -610,9 +610,9 @@ void print_simplex_tableau(double** tableau, int cols, int rows)
         }
         else 
         {
-            printf("#%d|\t", i + 1);
+            printf("#%zu|\t", i + 1);
         }
-        for (int j = 0; j < cols; j++) 
+        for (size_t j = 0; j < cols; j++) 
         {
             printf("%.3lf\t", tableau[i][j]);
         }
@@ -624,9 +624,9 @@ void print_DD_table(double** table, double* x, int n)
 {
     printf("\nDivided Differences Table:\n");
     printf("xi\tf(xi)\n");
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         printf("%-6.3lf|\t", x[i]);
-        for (int j = 0; j < n - i; j++) {
+        for (size_t j = 0; j < n - i; j++) {
             printf("%-10lf\t", table[i][j]);
         }
         printf("\n\n");
@@ -637,9 +637,9 @@ void print_wDD_table(double** table, double* d, int n)
 {
     printf("\nWeighted Divided Differences Table:\n");
     printf("δi\tf(δi)\n");
-    for (int i = 0; i < n; i++) {
+    for (size_t i = 0; i < n; i++) {
         printf("%-6.3lf|\t", d[i]);
-        for (int j = 0; j < n - i; j++) {
+        for (size_t j = 0; j < n - i; j++) {
             printf("%-10lf\t", table[i][j]);
         }
         printf("\n\n");
