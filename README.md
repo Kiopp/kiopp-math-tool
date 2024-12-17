@@ -1,4 +1,4 @@
-# kiopps-math-tool
+# kiopp-math-tool
 
 ## Features
 - **Classic Divided Differences(DD):** A simple tool for calculating an entire DD table. Can take 1 or more data points as input. The data points consist of a variable(x) and the function(y) value at that point. Top row of table represents the coefficients of a Newton interpolation through the data points.
