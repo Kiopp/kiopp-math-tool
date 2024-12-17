@@ -8,6 +8,8 @@ set(INCLUDE_DIR inc)
 # Source files
 set(SOURCES
     src/main.c
+    src/kiopp_interface.c
+    src/kiopp_math.c
 )
 
 # Create executable

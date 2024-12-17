@@ -8,4 +8,22 @@
 - **Max LP Simplex:** A simple tool for calculating normal max LP problems using the Simplex method. Input the objective function's coefficients, the restriction's coefficients and RHS. Prints both the initial tableau and the final tableau. 
 
 ## Compilation
-Compilation should be easy and straight-forward on any system that has a C-compiler and using the C99 standard. I only use the standard libraries, or libraries included in the project. Personally I am using gcc. And have only tested the program on an arch-based linux distribution (btw).
+Compilation should be easy and straight-forward on any system with CMake.
+
+### Linux
+1. Create build folder: 
+```
+mkdir build && cd build
+```
+2. Create Makefile using CMake:
+```
+cmake ..
+```
+3. Compile using Make:
+```
+make
+```
+4. Run program:
+```
+./math_tool
+```
